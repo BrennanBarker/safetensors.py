@@ -17,3 +17,8 @@ def pack(key_sizes, max_size):
             bins[uuid4().hex] = [key]
 
     return bins
+
+items = {'a':4, 'b': 3, 'c': 2, 'd': 6, 'e': 5, 'f': 1}
+bin_capacity = 6
+bins =pack(items, bin_capacity)
+print(bins)
