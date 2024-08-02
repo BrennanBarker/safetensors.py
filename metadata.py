@@ -11,7 +11,7 @@ def get_header(safetensors_file):
     return header, header_size
 
 def get_tensor(safetensors_file, key):
-    header, header_size = get_header(file)
+    header, header_size = get_header(safetensors_file)
     metadata = header[key]
     start, end = metadata['data_offsets']
     with open(file, 'rb') as f:
