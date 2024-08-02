@@ -4,6 +4,7 @@ split_out
 *.safetensors
 archive_out
 key
+aws
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
