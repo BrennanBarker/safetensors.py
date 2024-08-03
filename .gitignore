@@ -5,6 +5,7 @@ split_out
 archive_out
 key
 aws
+archives
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
