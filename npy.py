@@ -1,14 +1,20 @@
 from math import prod
 from uuid import uuid4
 import tarfile
-from tempfile import NamedTemporaryFile
 from pathlib import Path
+import json
 
 import safetensors
 import numpy as np
 from tqdm import tqdm
 
-from metadata import get_header
+
+def get_header(safetensors_file):
+    with open(safetensors_file, 'rb') as f: 
+        header_size = int.from_bytes(f.read(8), byteorder='little')
+        header_bytes = f.read(header_size)
+        header = json.loads(header_bytes.decode('utf-8'))
+    return header
 
 def pack(key_sizes, max_size):
     key_sizes = dict(sorted(key_sizes.items(), reverse=True, key=lambda x: x[1]))
@@ -35,17 +41,25 @@ def create_archive(keys, archive_name, tensors):
             tar.add(filepath, arcname=f'{key}.npy')
             filepath.unlink()
 
-filename = 'sd3_medium.safetensors'
+def create_archives(safetensors_filename: Path, output_dir: Path) -> None:
+    output_dir.mkdir()
+    header = get_header(safetensors_filename)
+    metadata = header.pop('__metadata__')
+    sizes = { k: prod(v['shape']) * 2 for k,v in header.items() }
+    packing_plan = pack(sizes, 200 * 1024 ** 2)
 
-header = get_header(filename)
-metadata = header.pop('__metadata__')
+    tensors = safetensors.safe_open(safetensors_filename, framework='numpy')
 
-sizes = { k: prod(v['shape']) * 2 for k,v in header.items() }
+    with open(output_dir / 'metadata.json', 'w') as f:
+        json.dump(metadata, f)
+    for i, plan in enumerate(packing_plan):
+        create_archive(plan, output_dir / f'{i}.tar.gz', tensors)
 
-packing_plan = pack(sizes, 200 * 1024 ** 2)
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description="Process a safetensors file and save the output to a directory.")
+    parser.add_argument('safetensors_filename', type=Path, help='The path to the safetensors file.')
+    parser.add_argument('output_dir', type=Path, help='The directory where the output will be saved.')
+    args = parser.parse_args()
 
-tensors = safetensors.safe_open(filename, framework='numpy')
-
-archives = Path('archives')
-for i, plan in enumerate(packing_plan):
-    create_archive(plan, archives / f'archive{i}.tar.gz', tensors)
+    create_archives(args.safetensors_filename, args.output_dir)

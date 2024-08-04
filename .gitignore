@@ -1,10 +1,4 @@
-env
-out
-split_out
 *.safetensors
-archive_out
-key
-aws
 archives
 
 # Byte-compiled / optimized / DLL files

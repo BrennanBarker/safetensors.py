@@ -4,8 +4,8 @@ from pathlib import Path
 
 import safetensors
 
-from binning import pack
-from metadata import get_header
+from old.binning import pack
+from old.metadata import get_header
 from tar_archive import create_archive
 
 
