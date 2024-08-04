@@ -13,12 +13,8 @@ bucket = 'buck-9ed844ce-f99e-4251-b43c-ad8f36d59a18'
 
 def get_keys():
     resp = s3.list_objects(Bucket=bucket)
-    return [obj['Key'] for obj in resp['Contents']]
+    return [obj['Key'] for obj in resp.get('Contents') or []]
 
-def upload_files():
-    keys = get_keys()
-    for file in tqdm(list(Path('out').glob('*.json'))):
-        if file.name in keys:
-            tqdm.write(f'skipping {file.name}')
-        else:
-            s3.upload_file(file, bucket, file.name)
+def upload_files(dir):
+    for file in tqdm(list(Path(dir).iterdir())):
+        s3.upload_file(file, bucket, file.name)

@@ -13,14 +13,18 @@ def regenerate_safetensors(archives_dir: Path, output_filename: str):
     extracted_dirs = Path('extracted')
     extracted_dirs.mkdir()
     tensors = {}
-    for i, archive in tqdm(enumerate(list(archives))):
+    for i, archive in tqdm(list(enumerate(archives))):
         extracted_dir = extracted_dirs / f'{i}'
         extracted_dir.mkdir()
-        with tarfile.open(archive) as tarfile:
-            tarfile.extractall(extracted_dir)
+        with tarfile.open(archive) as tar:
+            tar.extractall(extracted_dir)
         for npy_file in extracted_dir.glob('*.npy'):
             key = npy_file.stem
             tensors[key] = np.load(npy_file)
+        for file in extracted_dir.iterdir():
+            file.unlink()
+        extracted_dir.rmdir()
+    extracted_dirs.rmdir()
     safetensors.numpy.save_file(tensors, output_filename, metadata=metadata)
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ import safetensors
 
 from old.binning import pack
 from old.metadata import get_header
-from tar_archive import create_archive
+from old.tar_archive import create_archive
 
 
 file = 'sd3_medium.safetensors'
