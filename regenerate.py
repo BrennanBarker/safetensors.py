@@ -4,7 +4,6 @@ import json
 from tqdm import tqdm
 
 import safetensors.numpy
-import numpy as np
 
 from parq import parquet_to_numpy
 
