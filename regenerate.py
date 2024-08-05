@@ -6,6 +6,8 @@ from tqdm import tqdm
 import safetensors.numpy
 import numpy as np
 
+from parq import parquet_to_numpy
+
 def regenerate_safetensors(archives_dir: Path, output_filename: str):
     archives = archives_dir.glob('*.tar.gz')
     with open(archives_dir / 'metadata.json') as f:
@@ -18,9 +20,9 @@ def regenerate_safetensors(archives_dir: Path, output_filename: str):
         extracted_dir.mkdir()
         with tarfile.open(archive) as tar:
             tar.extractall(extracted_dir)
-        for npy_file in extracted_dir.glob('*.npy'):
-            key = npy_file.stem
-            tensors[key] = np.load(npy_file)
+        for parquet_file in extracted_dir.glob('*.parquet'):
+            key = parquet_file.stem.split('__')[0]
+            tensors[key] = parquet_to_numpy(parquet_file)
         for file in extracted_dir.iterdir():
             file.unlink()
         extracted_dir.rmdir()
