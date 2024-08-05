@@ -18,8 +18,7 @@ def create_archive(keys, archive_name, tensors):
         for key in tqdm(keys):
             array = tensors.get_tensor(key)  # type: ignore 
             filepath = numpy_to_parquet(array, key, temp)
-            np.save(filepath, array, allow_pickle=False)
-            tar.add(filepath, arcname=f'{key}.npy')
+            tar.add(filepath, arcname=filepath.name)
             filepath.unlink()
 
 def create_archives(safetensors_filename: Path, output_dir: Path) -> None:
