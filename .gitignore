@@ -1,6 +1,7 @@
 *.safetensors
 archives
 temp 
+*.tar.gz
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
