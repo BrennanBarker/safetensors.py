@@ -18,3 +18,13 @@ def get_keys():
 def upload_files(dir):
     for file in tqdm(list(Path(dir).iterdir())):
         s3.upload_file(file, bucket, file.name)
+
+if __name__ == '__main__':
+    import sys
+    upload_files(sys.argv[1])
+
+from pathlib import Path
+arc_dirname = 'clip_l'
+arc_dir = Path(arc_dirname)
+for p in arc_dir.iterdir():
+    p.rename(arc_dir / f'{arc_dirname}_{p.name}')
