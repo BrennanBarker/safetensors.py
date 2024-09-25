@@ -7,7 +7,7 @@ import safetensors
 import numpy as np
 from tqdm import tqdm
 
-from header import get_header
+from code.header import get_header
 from pack import pack
 from parq import numpy_to_parquet
 

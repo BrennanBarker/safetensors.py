@@ -1,7 +1,7 @@
 import safetensors
 from tqdm import tqdm
 
-from archive import get_header
+from code.archive import get_header
 
 def test(regenerated_filename, original_filename):
     regenerated_header = get_header(regenerated_filename)
