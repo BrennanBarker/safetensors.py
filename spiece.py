@@ -3,7 +3,7 @@ from sentencepiece import sentencepiece_model_pb2
 
 def model_to_json(model_path, json_output_path):
     # Load the SentencePiece model
-    model = sentencepiece_model_pb2.ModelProto()
+    model = sentencepiece_model_pb2.ModelProto()  # type: ignore
     with open(model_path, 'rb') as f:
         model.ParseFromString(f.read())
 
@@ -22,7 +22,7 @@ def json_to_model(json_input_path, model_output_path):
         json_str = json_file.read()
 
     # Parse the JSON string into a Protobuf message
-    model = sentencepiece_model_pb2.ModelProto()
+    model = sentencepiece_model_pb2.ModelProto()  # type: ignore
     json_format.Parse(json_str, model)
 
     # Serialize the Protobuf message back into a .model file
